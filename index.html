@@ -20,6 +20,10 @@
             <input name="title" type="text" placeholder="The Hobbit" required />
           </label>
           <label>
+            <span>Author</span>
+            <input name="author" type="text" placeholder="J. R. R. Tolkien" required />
+          </label>
+          <label>
             <span>Total pages</span>
             <input name="totalPages" type="number" min="1" step="1" placeholder="310" required />
           </label>
@@ -43,7 +47,10 @@
 
     <template id="bookCardTemplate">
       <article class="book-row">
-        <h2 class="title"></h2>
+        <div class="book-text">
+          <h2 class="title"></h2>
+          <p class="author"></p>
+        </div>
         <div class="progress-wrap" aria-label="Book progress">
           <div class="progress-track">
             <div class="progress-bar"></div>

@@ -9,7 +9,12 @@ const importBooksInput = document.getElementById("importBooksInput");
 let books = loadBooks();
 
 function normalizeBook(book) {
-  if (!book || typeof book.title !== "string" || !Number.isFinite(Number(book.totalPages))) {
+  if (
+    !book ||
+    typeof book.title !== "string" ||
+    typeof book.author !== "string" ||
+    !Number.isFinite(Number(book.totalPages))
+  ) {
     return null;
   }
 
@@ -18,6 +23,7 @@ function normalizeBook(book) {
   return {
     id: String(book.id ?? `book-${crypto.randomUUID()}`),
     title: String(book.title),
+    author: String(book.author),
     totalPages,
     currentPages: Math.min(Math.max(Number(book.currentPages ?? 0), 0), totalPages),
   };
@@ -69,6 +75,7 @@ function renderBook(book) {
   const fragment = template.content.cloneNode(true);
   const row = fragment.querySelector(".book-row");
   const title = fragment.querySelector(".title");
+  const author = fragment.querySelector(".author");
   const percent = fragment.querySelector(".percent");
   const progressBar = fragment.querySelector(".progress-bar");
   const editButton = fragment.querySelector(".edit-book");
@@ -78,6 +85,7 @@ function renderBook(book) {
 
   row.dataset.bookId = book.id;
   title.textContent = book.title;
+  author.textContent = book.author;
   percent.textContent = `${progress}%`;
   progressBar.style.width = `${progress}%`;
   editButton.addEventListener("click", () => editBook(book.id));
@@ -114,6 +122,11 @@ function editBook(bookId) {
     return;
   }
 
+  const nextAuthor = window.prompt("Author", book.author);
+  if (nextAuthor === null) {
+    return;
+  }
+
   const nextTotalPagesInput = window.prompt("Total pages", String(book.totalPages));
   if (nextTotalPagesInput === null) {
     return;
@@ -128,11 +141,18 @@ function editBook(bookId) {
   const nextTotalPages = Number(nextTotalPagesInput);
   const nextCurrentPages = Number(nextCurrentPagesInput);
 
-  if (!nextTitleValue || !Number.isFinite(nextTotalPages) || nextTotalPages < 1 || !Number.isFinite(nextCurrentPages)) {
+  if (
+    !nextTitleValue ||
+    !nextAuthor.trim() ||
+    !Number.isFinite(nextTotalPages) ||
+    nextTotalPages < 1 ||
+    !Number.isFinite(nextCurrentPages)
+  ) {
     return;
   }
 
   book.title = nextTitleValue;
+  book.author = nextAuthor.trim();
   book.totalPages = nextTotalPages;
   book.currentPages = Math.min(Math.max(nextCurrentPages, 0), nextTotalPages);
 
@@ -145,10 +165,11 @@ addBookForm.addEventListener("submit", (event) => {
 
   const formData = new FormData(addBookForm);
   const title = String(formData.get("title") ?? "").trim();
+  const author = String(formData.get("author") ?? "").trim();
   const totalPages = Number(formData.get("totalPages") ?? 0);
   const currentPages = Number(formData.get("currentPages") ?? 0);
 
-  if (!title || !Number.isFinite(totalPages) || totalPages < 1 || !Number.isFinite(currentPages)) {
+  if (!title || !author || !Number.isFinite(totalPages) || totalPages < 1 || !Number.isFinite(currentPages)) {
     return;
   }
 
@@ -158,6 +179,7 @@ addBookForm.addEventListener("submit", (event) => {
     {
       id: `book-${crypto.randomUUID()}`,
       title,
+      author,
       totalPages,
       currentPages: safeCurrentPages,
     },

@@ -143,10 +143,21 @@ h1 {
   box-shadow: var(--shadow);
 }
 
+.book-text {
+  display: grid;
+  gap: 4px;
+}
+
 .title {
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.25;
+}
+
+.author {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
 }
 
 .progress-wrap {
@@ -225,6 +236,10 @@ h1 {
     grid-template-columns: 1fr;
     gap: 10px;
     padding: 12px;
+  }
+
+  .book-text {
+    gap: 2px;
   }
 
   .progress-wrap {
