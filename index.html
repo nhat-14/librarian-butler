@@ -3,89 +3,50 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Book Progress</title>
-    <meta
-      name="description"
-      content="Track your reading progress across a simple list of books."
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <title>Book List</title>
+    <meta name="description" content="A simple list of books with progress bars." />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="shell">
       <header class="hero">
-        <p class="eyebrow">Reading tracker</p>
-        <h1>Keep a clean view of what you’re reading.</h1>
-        <p class="subhead">
-          Enter the current page for each book and watch the progress fill in beneath the cover.
-        </p>
+        <p class="eyebrow">Book list</p>
+        <h1>Simple reading progress.</h1>
       </header>
 
-      <section class="library" aria-label="Book list">
-        <div id="bookList" class="book-list"></div>
-      </section>
-
       <section class="composer" aria-label="Add a book">
-        <h2>Add a book</h2>
         <form id="addBookForm" class="add-book-form">
           <label>
-            <span>Title</span>
-            <input name="title" type="text" placeholder="The Name of the Wind" required />
-          </label>
-          <label>
-            <span>Author</span>
-            <input name="author" type="text" placeholder="Patrick Rothfuss" required />
+            <span>Book title</span>
+            <input name="title" type="text" placeholder="The Hobbit" required />
           </label>
           <label>
             <span>Total pages</span>
-            <input name="totalPages" type="number" min="1" step="1" placeholder="662" required />
+            <input name="totalPages" type="number" min="1" step="1" placeholder="310" required />
           </label>
           <label>
-            <span>Cover URL</span>
-            <input name="cover" type="url" placeholder="https://example.com/cover.jpg" />
+            <span>Current pages</span>
+            <input name="currentPages" type="number" min="0" step="1" placeholder="120" required />
           </label>
           <button type="submit">Add book</button>
         </form>
       </section>
+
+      <section class="library" aria-label="Book list">
+        <div id="bookList" class="book-list"></div>
+      </section>
     </main>
 
     <template id="bookCardTemplate">
-      <article class="book-card">
-        <div class="cover-wrap">
-          <img class="cover" alt="Book cover" />
-          <div class="progress-shell" aria-hidden="true">
+      <article class="book-row">
+        <h2 class="title"></h2>
+        <div class="progress-wrap" aria-label="Book progress">
+          <div class="progress-track">
             <div class="progress-bar"></div>
           </div>
-        </div>
-
-        <div class="book-body">
-          <div class="book-meta">
-            <h2 class="title"></h2>
-            <p class="author"></p>
-          </div>
-
-          <div class="stats">
-            <div>
-              <span class="label">Total pages</span>
-              <strong class="total-pages"></strong>
-            </div>
-            <div>
-              <span class="label">Progress</span>
-              <strong class="percent"></strong>
-            </div>
-          </div>
-
-          <label class="field">
-            <span>Current page</span>
-            <input class="page-input" type="number" min="0" step="1" />
-          </label>
-
-          <p class="page-summary"></p>
+          <span class="percent"></span>
+          <button class="edit-book" type="button">Edit</button>
+          <button class="remove-book" type="button" aria-label="Remove book">Remove</button>
         </div>
       </article>
     </template>
