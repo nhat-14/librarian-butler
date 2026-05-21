@@ -2,8 +2,26 @@ const storageKey = "simple-book-list";
 const bookList = document.getElementById("bookList");
 const template = document.getElementById("bookCardTemplate");
 const addBookForm = document.getElementById("addBookForm");
+const exportBooksButton = document.getElementById("exportBooksButton");
+const importBooksButton = document.getElementById("importBooksButton");
+const importBooksInput = document.getElementById("importBooksInput");
 
 let books = loadBooks();
+
+function normalizeBook(book) {
+  if (!book || typeof book.title !== "string" || !Number.isFinite(Number(book.totalPages))) {
+    return null;
+  }
+
+  const totalPages = Number(book.totalPages);
+
+  return {
+    id: String(book.id ?? `book-${crypto.randomUUID()}`),
+    title: String(book.title),
+    totalPages,
+    currentPages: Math.min(Math.max(Number(book.currentPages ?? 0), 0), totalPages),
+  };
+}
 
 function loadBooks() {
   try {
@@ -12,17 +30,7 @@ function loadBooks() {
       return [];
     }
 
-    return storedBooks
-      .filter((book) => book && typeof book.title === "string" && Number.isFinite(Number(book.totalPages)))
-      .map((book) => ({
-        id: String(book.id ?? `book-${crypto.randomUUID()}`),
-        title: String(book.title),
-        totalPages: Number(book.totalPages),
-        currentPages: Math.min(
-          Math.max(Number(book.currentPages ?? 0), 0),
-          Number(book.totalPages),
-        ),
-      }));
+    return storedBooks.map(normalizeBook).filter(Boolean);
   } catch {
     return [];
   }
@@ -30,6 +38,31 @@ function loadBooks() {
 
 function saveBooks(nextBooks) {
   localStorage.setItem(storageKey, JSON.stringify(nextBooks));
+}
+
+function exportBooks() {
+  const blob = new Blob([JSON.stringify(books, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "books.json";
+  link.click();
+
+  URL.revokeObjectURL(url);
+}
+
+async function importBooksFromFile(file) {
+  const text = await file.text();
+  const parsed = JSON.parse(text);
+  if (!Array.isArray(parsed)) {
+    throw new Error("Import file must contain an array of books.");
+  }
+
+  const importedBooks = parsed.map(normalizeBook).filter(Boolean);
+  books = importedBooks;
+  saveBooks(books);
+  renderLibrary();
 }
 
 function renderBook(book) {
@@ -134,6 +167,27 @@ addBookForm.addEventListener("submit", (event) => {
   saveBooks(books);
   renderLibrary();
   addBookForm.reset();
+});
+
+exportBooksButton.addEventListener("click", exportBooks);
+
+importBooksButton.addEventListener("click", () => {
+  importBooksInput.click();
+});
+
+importBooksInput.addEventListener("change", async () => {
+  const [file] = importBooksInput.files ?? [];
+  if (!file) {
+    return;
+  }
+
+  try {
+    await importBooksFromFile(file);
+  } catch (error) {
+    window.alert(error instanceof Error ? error.message : "Could not import file.");
+  } finally {
+    importBooksInput.value = "";
+  }
 });
 
 renderLibrary();
