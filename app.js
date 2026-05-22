@@ -117,13 +117,13 @@ function editBook(bookId) {
     return;
   }
 
-  const nextTitle = window.prompt("Book title", book.title);
-  if (nextTitle === null) {
+  const nextTitleInput = window.prompt("Book title", book.title);
+  if (nextTitleInput === null) {
     return;
   }
 
-  const nextAuthor = window.prompt("Author", book.author);
-  if (nextAuthor === null) {
+  const nextAuthorInput = window.prompt("Author", book.author);
+  if (nextAuthorInput === null) {
     return;
   }
 
@@ -137,22 +137,21 @@ function editBook(bookId) {
     return;
   }
 
-  const nextTitleValue = nextTitle.trim();
-  const nextTotalPages = Number(nextTotalPagesInput);
-  const nextCurrentPages = Number(nextCurrentPagesInput);
+  const nextTitleValue = nextTitleInput.trim() || book.title;
+  const nextAuthorValue = nextAuthorInput.trim() || book.author;
+  const nextTotalPagesValue = nextTotalPagesInput.trim();
+  const nextCurrentPagesValue = nextCurrentPagesInput.trim();
 
-  if (
-    !nextTitleValue ||
-    !nextAuthor.trim() ||
-    !Number.isFinite(nextTotalPages) ||
-    nextTotalPages < 1 ||
-    !Number.isFinite(nextCurrentPages)
-  ) {
+  const nextTotalPages = nextTotalPagesValue === "" ? book.totalPages : Number(nextTotalPagesValue);
+  const nextCurrentPages = nextCurrentPagesValue === "" ? book.currentPages : Number(nextCurrentPagesValue);
+
+  if (!Number.isFinite(nextTotalPages) || nextTotalPages < 1 || !Number.isFinite(nextCurrentPages) || nextCurrentPages < 0) {
+    window.alert("Please enter valid page numbers.");
     return;
   }
 
   book.title = nextTitleValue;
-  book.author = nextAuthor.trim();
+  book.author = nextAuthorValue;
   book.totalPages = nextTotalPages;
   book.currentPages = Math.min(Math.max(nextCurrentPages, 0), nextTotalPages);
 
