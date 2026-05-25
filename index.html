@@ -50,13 +50,16 @@
         <div class="book-text">
           <h2 class="title"></h2>
           <p class="author"></p>
+          <label class="current-page-field">
+            <span>Current page</span>
+            <input class="current-pages-input" type="number" min="0" step="1" />
+          </label>
         </div>
         <div class="progress-wrap" aria-label="Book progress">
           <div class="progress-track">
             <div class="progress-bar"></div>
           </div>
           <span class="percent"></span>
-          <button class="edit-book" type="button">Edit</button>
           <button class="remove-book" type="button" aria-label="Remove book">Remove</button>
         </div>
       </article>

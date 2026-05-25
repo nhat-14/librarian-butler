@@ -76,9 +76,9 @@ function renderBook(book) {
   const row = fragment.querySelector(".book-row");
   const title = fragment.querySelector(".title");
   const author = fragment.querySelector(".author");
+  const currentPagesInput = fragment.querySelector(".current-pages-input");
   const percent = fragment.querySelector(".percent");
   const progressBar = fragment.querySelector(".progress-bar");
-  const editButton = fragment.querySelector(".edit-book");
   const removeButton = fragment.querySelector(".remove-book");
 
   const progress = book.totalPages === 0 ? 0 : Math.round((book.currentPages / book.totalPages) * 100);
@@ -86,9 +86,11 @@ function renderBook(book) {
   row.dataset.bookId = book.id;
   title.textContent = book.title;
   author.textContent = book.author;
+  currentPagesInput.value = String(book.currentPages);
+  currentPagesInput.max = String(book.totalPages);
+  currentPagesInput.addEventListener("change", () => updateCurrentPages(book.id, currentPagesInput.value));
   percent.textContent = `${progress}%`;
   progressBar.style.width = `${progress}%`;
-  editButton.addEventListener("click", () => editBook(book.id));
   removeButton.addEventListener("click", () => removeBook(book.id));
 
   return fragment;
@@ -111,50 +113,19 @@ function removeBook(bookId) {
   renderLibrary();
 }
 
-function editBook(bookId) {
+function updateCurrentPages(bookId, nextCurrentPagesValue) {
   const book = books.find((entry) => entry.id === bookId);
   if (!book) {
     return;
   }
 
-  const nextTitleInput = window.prompt("Book title", book.title);
-  if (nextTitleInput === null) {
+  const nextCurrentPages = Number(nextCurrentPagesValue);
+  if (!Number.isFinite(nextCurrentPages) || nextCurrentPages < 0) {
+    renderLibrary();
     return;
   }
 
-  const nextAuthorInput = window.prompt("Author", book.author);
-  if (nextAuthorInput === null) {
-    return;
-  }
-
-  const nextTotalPagesInput = window.prompt("Total pages", String(book.totalPages));
-  if (nextTotalPagesInput === null) {
-    return;
-  }
-
-  const nextCurrentPagesInput = window.prompt("Current pages", String(book.currentPages));
-  if (nextCurrentPagesInput === null) {
-    return;
-  }
-
-  const nextTitleValue = nextTitleInput.trim() || book.title;
-  const nextAuthorValue = nextAuthorInput.trim() || book.author;
-  const nextTotalPagesValue = nextTotalPagesInput.trim();
-  const nextCurrentPagesValue = nextCurrentPagesInput.trim();
-
-  const nextTotalPages = nextTotalPagesValue === "" ? book.totalPages : Number(nextTotalPagesValue);
-  const nextCurrentPages = nextCurrentPagesValue === "" ? book.currentPages : Number(nextCurrentPagesValue);
-
-  if (!Number.isFinite(nextTotalPages) || nextTotalPages < 1 || !Number.isFinite(nextCurrentPages) || nextCurrentPages < 0) {
-    window.alert("Please enter valid page numbers.");
-    return;
-  }
-
-  book.title = nextTitleValue;
-  book.author = nextAuthorValue;
-  book.totalPages = nextTotalPages;
-  book.currentPages = Math.min(Math.max(nextCurrentPages, 0), nextTotalPages);
-
+  book.currentPages = Math.min(Math.max(nextCurrentPages, 0), book.totalPages);
   saveBooks(books);
   renderLibrary();
 }

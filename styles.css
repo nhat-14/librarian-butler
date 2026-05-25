@@ -145,7 +145,7 @@ h1 {
 
 .book-text {
   display: grid;
-  gap: 4px;
+  gap: 8px;
 }
 
 .title {
@@ -158,6 +158,35 @@ h1 {
   margin: 0;
   color: var(--muted);
   font-size: 0.82rem;
+}
+
+.current-page-field {
+  display: grid;
+  gap: 4px;
+  max-width: 140px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.current-page-field span {
+  line-height: 1;
+}
+
+.current-pages-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid rgba(31, 26, 23, 0.14);
+  border-radius: 10px;
+  font: inherit;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text);
+  outline: none;
+}
+
+.current-pages-input:focus {
+  border-color: rgba(58, 170, 85, 0.55);
+  box-shadow: 0 0 0 4px rgba(58, 170, 85, 0.12);
 }
 
 .progress-wrap {
@@ -206,22 +235,6 @@ h1 {
   background: rgba(125, 61, 52, 0.08);
 }
 
-.edit-book {
-  padding: 8px 10px;
-  border: 1px solid rgba(31, 26, 23, 0.14);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #385342;
-  font: inherit;
-  font-size: 0.8rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.edit-book:hover {
-  background: rgba(56, 83, 66, 0.08);
-}
-
 @media (max-width: 640px) {
   .shell {
     width: min(100% - 16px, 1120px);
@@ -239,7 +252,7 @@ h1 {
   }
 
   .book-text {
-    gap: 2px;
+    gap: 6px;
   }
 
   .progress-wrap {
