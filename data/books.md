@@ -7,18 +7,11 @@ Edit the JSON block below to update book information.
 ```json
 [
   {
-    "id": "book-the-hobbit",
-    "title": "The Hobbit",
-    "author": "J. R. R. Tolkien",
-    "totalPages": 310,
-    "currentPages": 120
-  },
-  {
-    "id": "book-clean-code",
-    "title": "Clean Code",
-    "author": "Robert C. Martin",
-    "totalPages": 464,
-    "currentPages": 40
+    "id": "book-2cf6ffbe-114d-43de-a4b3-34fcc57c799d",
+    "title": "Test",
+    "author": "test",
+    "totalPages": 12,
+    "currentPages": 12
   }
 ]
 ```
