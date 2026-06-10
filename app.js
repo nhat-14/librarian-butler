@@ -1,12 +1,12 @@
-const storageKey = "simple-book-list";
 const bookList = document.getElementById("bookList");
 const template = document.getElementById("bookCardTemplate");
 const addBookForm = document.getElementById("addBookForm");
 const exportBooksButton = document.getElementById("exportBooksButton");
 const importBooksButton = document.getElementById("importBooksButton");
 const importBooksInput = document.getElementById("importBooksInput");
+const createPrUpdateButton = document.getElementById("createPrUpdateButton");
 
-let books = loadBooks();
+let books = [];
 
 function normalizeBook(book) {
   if (
@@ -29,21 +29,38 @@ function normalizeBook(book) {
   };
 }
 
-function loadBooks() {
+async function loadBooksFromMarkdown() {
   try {
-    const storedBooks = JSON.parse(localStorage.getItem(storageKey));
-    if (!Array.isArray(storedBooks)) {
+    const response = await fetch("./data/books.md", { cache: "no-store" });
+    if (!response.ok) {
       return [];
     }
 
-    return storedBooks.map(normalizeBook).filter(Boolean);
+    const markdown = await response.text();
+    const jsonBlockMatch = markdown.match(/```json\s*([\s\S]*?)```/i);
+    if (!jsonBlockMatch) {
+      return [];
+    }
+
+    const parsedBooks = JSON.parse(jsonBlockMatch[1]);
+    if (!Array.isArray(parsedBooks)) {
+      return [];
+    }
+
+    return parsedBooks.map(normalizeBook).filter(Boolean);
   } catch {
     return [];
   }
 }
 
+async function initializeLibrary() {
+  const markdownBooks = await loadBooksFromMarkdown();
+  books = markdownBooks;
+  renderLibrary();
+}
+
 function saveBooks(nextBooks) {
-  localStorage.setItem(storageKey, JSON.stringify(nextBooks));
+  books = nextBooks;
 }
 
 function exportBooks() {
@@ -56,6 +73,63 @@ function exportBooks() {
   link.click();
 
   URL.revokeObjectURL(url);
+}
+
+function inferRepositoryFromLocation() {
+  const host = window.location.hostname;
+  const pathSegments = window.location.pathname.split("/").filter(Boolean);
+
+  if (host.endsWith("github.io") && pathSegments.length > 0) {
+    return {
+      owner: host.split(".")[0],
+      repo: pathSegments[0],
+    };
+  }
+
+  return {
+    owner: "nhat-14",
+    repo: "librarian-butler",
+  };
+}
+
+function createWebsiteUpdateIssue() {
+  const { owner, repo } = inferRepositoryFromLocation();
+  if (!owner || !repo) {
+    window.alert("Could not determine repository path.");
+    return;
+  }
+
+  const note = window.prompt("Optional progress note for data/progress.md", "") ?? "";
+  const compactBooks = books.map((book) => ({
+    id: String(book.id),
+    title: String(book.title),
+    author: String(book.author),
+    totalPages: Number(book.totalPages),
+    currentPages: Number(book.currentPages),
+  }));
+
+  const issueTitle = `[website-update] Books data update (${new Date().toISOString().slice(0, 10)})`;
+  const issueBody = [
+    "This issue was generated from the website UI.",
+    "",
+    "Please keep the markers unchanged.",
+    "",
+    "<!-- BOOKS_JSON_START -->",
+    "```json",
+    JSON.stringify(compactBooks, null, 2),
+    "```",
+    "<!-- BOOKS_JSON_END -->",
+    "",
+    "<!-- PROGRESS_NOTE_START -->",
+    note.trim() || "No progress note provided.",
+    "<!-- PROGRESS_NOTE_END -->",
+  ].join("\n");
+
+  const issueUrl = new URL(`https://github.com/${owner}/${repo}/issues/new`);
+  issueUrl.searchParams.set("title", issueTitle);
+  issueUrl.searchParams.set("body", issueBody);
+
+  window.open(issueUrl.toString(), "_blank", "noopener");
 }
 
 async function importBooksFromFile(file) {
@@ -167,6 +241,8 @@ importBooksButton.addEventListener("click", () => {
   importBooksInput.click();
 });
 
+createPrUpdateButton.addEventListener("click", createWebsiteUpdateIssue);
+
 importBooksInput.addEventListener("change", async () => {
   const [file] = importBooksInput.files ?? [];
   if (!file) {
@@ -182,4 +258,4 @@ importBooksInput.addEventListener("change", async () => {
   }
 });
 
-renderLibrary();
+initializeLibrary();

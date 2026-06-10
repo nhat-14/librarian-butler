@@ -1,0 +1,78 @@
+name: Open PR for books/progress updates
+
+on:
+  push:
+    branches-ignore:
+      - master
+    paths:
+      - data/books.md
+      - data/progress.md
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  open-pull-request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create PR when needed
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const head = context.ref.replace("refs/heads/", "");
+            const base = "master";
+
+            if (head === base) {
+              core.info("Push is on base branch; skipping.");
+              return;
+            }
+
+            const existing = await github.rest.pulls.list({
+              owner,
+              repo,
+              state: "open",
+              head: `${owner}:${head}`,
+              base,
+              per_page: 1
+            });
+
+            if (existing.data.length > 0) {
+              core.info(`Open PR already exists: #${existing.data[0].number}`);
+              return;
+            }
+
+            const compare = await github.rest.repos.compareCommits({
+              owner,
+              repo,
+              base,
+              head
+            });
+
+            if (compare.data.ahead_by === 0) {
+              core.info("No commits ahead of base; skipping.");
+              return;
+            }
+
+            const pr = await github.rest.pulls.create({
+              owner,
+              repo,
+              title: `Update books/progress data (${head})`,
+              body: [
+                "This PR was created automatically.",
+                "",
+                "Included changes:",
+                "- data/books.md",
+                "- data/progress.md"
+              ].join("\n"),
+              head,
+              base
+            });
+
+            core.info(`Created PR: ${pr.data.html_url}`);
