@@ -10,7 +10,7 @@ A simple GitHub Pages-friendly reading tracker.
 - Lets you add custom books from the page
 - Loads default/shared books from `data/books.md` (Markdown JSON block)
 - Supports a Markdown notes file at `data/progress.md`
-- Uses `master` as the direct update branch for Markdown data changes
+- Creates a GitHub issue from the website and automatically opens a PR with updated `data/books.md`
 
 ## Markdown database
 
@@ -21,7 +21,7 @@ This project uses Markdown files as repo-based data:
 
 When the app starts, it loads books from `data/books.md`.
 
-Note: edits made in the browser are in-memory for the current page session. To persist, update `data/books.md` and/or `data/progress.md` and push to `master`.
+Note: edits made in the browser are in-memory for the current page session until you click the Create PR update button and submit the generated GitHub issue.
 
 ## GitHub workflow
 
@@ -29,9 +29,9 @@ Workflow file: `.github/workflows/books-progress-pr.yml`
 
 Behavior:
 
-1. Edit `data/books.md` or `data/progress.md`.
-2. Push to `master`.
-3. Workflow runs and recognizes data is already updated directly on `master`.
+1. Update books in the website UI.
+2. Click Create PR update and submit the prefilled issue.
+3. GitHub Actions parses the issue, updates `data/books.md` on an automation branch, and opens/updates a PR into `master`.
 
 ## Run locally
 
