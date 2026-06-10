@@ -1,9 +1,6 @@
 const bookList = document.getElementById("bookList");
 const template = document.getElementById("bookCardTemplate");
 const addBookForm = document.getElementById("addBookForm");
-const exportBooksButton = document.getElementById("exportBooksButton");
-const importBooksButton = document.getElementById("importBooksButton");
-const importBooksInput = document.getElementById("importBooksInput");
 const createPrUpdateButton = document.getElementById("createPrUpdateButton");
 
 let books = [];
@@ -63,18 +60,6 @@ function saveBooks(nextBooks) {
   books = nextBooks;
 }
 
-function exportBooks() {
-  const blob = new Blob([JSON.stringify(books, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-
-  link.href = url;
-  link.download = "books.json";
-  link.click();
-
-  URL.revokeObjectURL(url);
-}
-
 function inferRepositoryFromLocation() {
   const host = window.location.hostname;
   const pathSegments = window.location.pathname.split("/").filter(Boolean);
@@ -130,19 +115,6 @@ function createWebsiteUpdateIssue() {
   issueUrl.searchParams.set("body", issueBody);
 
   window.open(issueUrl.toString(), "_blank", "noopener");
-}
-
-async function importBooksFromFile(file) {
-  const text = await file.text();
-  const parsed = JSON.parse(text);
-  if (!Array.isArray(parsed)) {
-    throw new Error("Import file must contain an array of books.");
-  }
-
-  const importedBooks = parsed.map(normalizeBook).filter(Boolean);
-  books = importedBooks;
-  saveBooks(books);
-  renderLibrary();
 }
 
 function renderBook(book) {
@@ -235,27 +207,6 @@ addBookForm.addEventListener("submit", (event) => {
   addBookForm.reset();
 });
 
-exportBooksButton.addEventListener("click", exportBooks);
-
-importBooksButton.addEventListener("click", () => {
-  importBooksInput.click();
-});
-
 createPrUpdateButton.addEventListener("click", createWebsiteUpdateIssue);
-
-importBooksInput.addEventListener("change", async () => {
-  const [file] = importBooksInput.files ?? [];
-  if (!file) {
-    return;
-  }
-
-  try {
-    await importBooksFromFile(file);
-  } catch (error) {
-    window.alert(error instanceof Error ? error.message : "Could not import file.");
-  } finally {
-    importBooksInput.value = "";
-  }
-});
 
 initializeLibrary();
