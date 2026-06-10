@@ -31,7 +31,8 @@ Behavior:
 
 1. Update books in the website UI.
 2. Click Create PR update and submit the prefilled issue.
-3. GitHub Actions parses the issue, updates `data/books.md` on an automation branch, and opens/updates a PR into `master`.
+3. GitHub Actions parses the issue and updates `data/books.md` on an automation branch.
+4. If GitHub Actions is allowed to open PRs in the repository, it opens/updates a PR into `master`; otherwise it comments with a compare link so you can open the PR manually.
 
 ## Run locally
 

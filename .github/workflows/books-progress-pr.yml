@@ -25,16 +25,21 @@ jobs:
             const repo = context.repo.repo;
             const issue = context.payload.issue;
             const base = "master";
+            const compareUrl = `https://github.com/${owner}/${repo}/compare/${base}...website-update-issue-${issue.number}?expand=1`;
 
-            const body = issue.body || "";
-            const match = body.match(/<!-- BOOKS_JSON_START -->\s*```json\s*([\s\S]*?)```\s*<!-- BOOKS_JSON_END -->/i);
-            if (!match) {
+            async function commentOnIssue(body) {
               await github.rest.issues.createComment({
                 owner,
                 repo,
                 issue_number: issue.number,
-                body: "Could not find books JSON markers in this issue."
+                body
               });
+            }
+
+            const body = issue.body || "";
+            const match = body.match(/<!-- BOOKS_JSON_START -->\s*```json\s*([\s\S]*?)```\s*<!-- BOOKS_JSON_END -->/i);
+            if (!match) {
+              await commentOnIssue("Could not find books JSON markers in this issue.");
               return;
             }
 
@@ -42,22 +47,12 @@ jobs:
             try {
               parsed = JSON.parse(match[1]);
             } catch {
-              await github.rest.issues.createComment({
-                owner,
-                repo,
-                issue_number: issue.number,
-                body: "Could not parse JSON in this issue."
-              });
+              await commentOnIssue("Could not parse JSON in this issue.");
               return;
             }
 
             if (!Array.isArray(parsed)) {
-              await github.rest.issues.createComment({
-                owner,
-                repo,
-                issue_number: issue.number,
-                body: "Books payload must be a JSON array."
-              });
+              await commentOnIssue("Books payload must be a JSON array.");
               return;
             }
 
@@ -156,27 +151,31 @@ jobs:
             });
 
             if (existingPr.data.length > 0) {
-              await github.rest.issues.createComment({
-                owner,
-                repo,
-                issue_number: issue.number,
-                body: `Updated existing PR: ${existingPr.data[0].html_url}`
-              });
+              await commentOnIssue(`Updated existing PR: ${existingPr.data[0].html_url}`);
               return;
             }
 
-            const pr = await github.rest.pulls.create({
-              owner,
-              repo,
-              title: `Website books update from issue #${issue.number}`,
-              body: `Automated update from website issue #${issue.number}.\n\nCloses #${issue.number}`,
-              head: branch,
-              base
-            });
+            try {
+              const pr = await github.rest.pulls.create({
+                owner,
+                repo,
+                title: `Website books update from issue #${issue.number}`,
+                body: `Automated update from website issue #${issue.number}.\n\nCloses #${issue.number}`,
+                head: branch,
+                base
+              });
 
-            await github.rest.issues.createComment({
-              owner,
-              repo,
-              issue_number: issue.number,
-              body: `Created PR: ${pr.data.html_url}`
-            });
+              await commentOnIssue(`Created PR: ${pr.data.html_url}`);
+            } catch (error) {
+              if (
+                error?.status === 403 &&
+                /not permitted to create or approve pull requests/i.test(error?.message || "")
+              ) {
+                await commentOnIssue(
+                  `Updated \`${branch}\`, but GitHub Actions is not allowed to open pull requests in this repository. Open one manually here: ${compareUrl}`
+                );
+                return;
+              }
+
+              throw error;
+            }
