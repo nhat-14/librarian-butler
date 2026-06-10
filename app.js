@@ -84,7 +84,6 @@ function createWebsiteUpdateIssue() {
     return;
   }
 
-  const note = window.prompt("Optional progress note for data/progress.md", "") ?? "";
   const compactBooks = books.map((book) => ({
     id: String(book.id),
     title: String(book.title),
@@ -104,10 +103,6 @@ function createWebsiteUpdateIssue() {
     JSON.stringify(compactBooks, null, 2),
     "```",
     "<!-- BOOKS_JSON_END -->",
-    "",
-    "<!-- PROGRESS_NOTE_START -->",
-    note.trim() || "No progress note provided.",
-    "<!-- PROGRESS_NOTE_END -->",
   ].join("\n");
 
   const issueUrl = new URL(`https://github.com/${owner}/${repo}/issues/new`);
