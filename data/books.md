@@ -7,18 +7,11 @@ Edit the JSON block below to update book information.
 ```json
 [
   {
-    "id": "book-the-hobbit",
-    "title": "The Hobbit",
-    "author": "J. R. R. Tolkien",
-    "totalPages": 310,
-    "currentPages": 120
-  },
-  {
-    "id": "book-clean-code",
-    "title": "Clean Code",
-    "author": "Robert C. Martin",
-    "totalPages": 464,
-    "currentPages": 40
+    "id": "book-89dd9929-2542-4147-b6a5-2c25a5a854d8",
+    "title": "Essential Scrum",
+    "author": "KENNETH S. RUBIN",
+    "totalPages": 498,
+    "currentPages": 46
   }
 ]
 ```
