@@ -46,7 +46,8 @@ h1 {
 
 .book-list {
   display: grid;
-  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
 }
 
 .composer {
@@ -133,14 +134,15 @@ h1 {
 
 .book-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 240px;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 14px 14px 16px;
+  grid-template-columns: 1fr;
+  align-content: start;
+  gap: 10px;
+  padding: 12px;
   border: 1px solid var(--card-border);
   border-radius: 14px;
   background: var(--card);
   box-shadow: var(--shadow);
+  height: 100%;
 }
 
 .book-text {
@@ -191,7 +193,7 @@ h1 {
 
 .progress-wrap {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 8px;
 }
@@ -220,6 +222,8 @@ h1 {
 }
 
 .remove-book {
+  grid-column: 1 / -1;
+  justify-self: end;
   padding: 8px 10px;
   border: 1px solid rgba(31, 26, 23, 0.14);
   border-radius: 999px;
@@ -329,7 +333,8 @@ h1 {
 /* MOVIE LIST STYLING */
 .movie-list {
   display: grid;
-  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
 }
 
 .movie-filters {
@@ -364,14 +369,15 @@ h1 {
 
 .movie-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 14px 14px 16px;
+  grid-template-columns: 1fr;
+  align-content: start;
+  gap: 10px;
+  padding: 12px;
   border: 1px solid var(--card-border);
   border-radius: 14px;
   background: var(--card);
   box-shadow: var(--shadow);
+  height: 100%;
 }
 
 .movie-text {
@@ -400,7 +406,7 @@ h1 {
 .movie-actions {
   display: flex;
   gap: 8px;
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 .remove-movie {
@@ -448,6 +454,7 @@ h1 {
 
   .book-list,
   .movie-list {
+    grid-template-columns: 1fr;
     gap: 8px;
   }
 
