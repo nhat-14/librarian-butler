@@ -146,7 +146,14 @@ function createWebsiteUpdateIssue() {
     currentPages: Number(book.currentPages),
   }));
 
-  const issueTitle = `[website-update] Books data update (${new Date().toISOString().slice(0, 10)})`;
+  const compactMovies = movies.map((movie) => ({
+    id: String(movie.id),
+    title: String(movie.title),
+    year: movie.year ? Number(movie.year) : null,
+    status: String(movie.status),
+  }));
+
+  const issueTitle = `[website-update] Library data update (${new Date().toISOString().slice(0, 10)})`;
   const issueBody = [
     "This issue was generated from the website UI.",
     "",
@@ -157,34 +164,6 @@ function createWebsiteUpdateIssue() {
     JSON.stringify(compactBooks, null, 2),
     "```",
     "<!-- BOOKS_JSON_END -->",
-  ].join("\n");
-
-  const issueUrl = new URL(`https://github.com/${owner}/${repo}/issues/new`);
-  issueUrl.searchParams.set("title", issueTitle);
-  issueUrl.searchParams.set("body", issueBody);
-
-  window.open(issueUrl.toString(), "_blank", "noopener");
-}
-
-function createMovieWebsiteUpdateIssue() {
-  const { owner, repo } = inferRepositoryFromLocation();
-  if (!owner || !repo) {
-    window.alert("Could not determine repository path.");
-    return;
-  }
-
-  const compactMovies = movies.map((movie) => ({
-    id: String(movie.id),
-    title: String(movie.title),
-    year: movie.year ? Number(movie.year) : null,
-    status: String(movie.status),
-  }));
-
-  const issueTitle = `[website-update] Movies data update (${new Date().toISOString().slice(0, 10)})`;
-  const issueBody = [
-    "This issue was generated from the website UI.",
-    "",
-    "Please keep the markers unchanged.",
     "",
     "<!-- MOVIES_JSON_START -->",
     "```json",
@@ -389,6 +368,6 @@ filterButtons.forEach((button) => {
 });
 
 createPrUpdateButton.addEventListener("click", createWebsiteUpdateIssue);
-createMoviePrUpdateButton.addEventListener("click", createMovieWebsiteUpdateIssue);
+createMoviePrUpdateButton.addEventListener("click", createWebsiteUpdateIssue);
 
 initializeLibrary();

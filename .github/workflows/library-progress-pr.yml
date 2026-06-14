@@ -1,4 +1,4 @@
-name: Website issue to books PR
+name: Website issue to library PR
 
 on:
   issues:
@@ -12,12 +12,12 @@ permissions:
   issues: write
 
 jobs:
-  create-books-pr:
+  create-library-pr:
     if: startsWith(github.event.issue.title, '[website-update]')
     runs-on: ubuntu-latest
 
     steps:
-      - name: Create branch, update books markdown, open PR
+      - name: Create branch, update library markdown, open PR
         uses: actions/github-script@v7
         with:
           script: |
@@ -37,26 +37,45 @@ jobs:
             }
 
             const body = issue.body || "";
-            const match = body.match(/<!-- BOOKS_JSON_START -->\s*```json\s*([\s\S]*?)```\s*<!-- BOOKS_JSON_END -->/i);
-            if (!match) {
+            const booksMatch = body.match(/<!-- BOOKS_JSON_START -->\s*```json\s*([\s\S]*?)```\s*<!-- BOOKS_JSON_END -->/i);
+            if (!booksMatch) {
               await commentOnIssue("Could not find books JSON markers in this issue.");
               return;
             }
 
-            let parsed;
-            try {
-              parsed = JSON.parse(match[1]);
-            } catch {
-              await commentOnIssue("Could not parse JSON in this issue.");
+            const moviesMatch = body.match(/<!-- MOVIES_JSON_START -->\s*```json\s*([\s\S]*?)```\s*<!-- MOVIES_JSON_END -->/i);
+            if (!moviesMatch) {
+              await commentOnIssue("Could not find movies JSON markers in this issue.");
               return;
             }
 
-            if (!Array.isArray(parsed)) {
+            let parsedBooks;
+            let parsedMovies;
+            try {
+              parsedBooks = JSON.parse(booksMatch[1]);
+            } catch {
+              await commentOnIssue("Could not parse books JSON in this issue.");
+              return;
+            }
+
+            try {
+              parsedMovies = JSON.parse(moviesMatch[1]);
+            } catch {
+              await commentOnIssue("Could not parse movies JSON in this issue.");
+              return;
+            }
+
+            if (!Array.isArray(parsedBooks)) {
               await commentOnIssue("Books payload must be a JSON array.");
               return;
             }
 
-            const books = parsed
+            if (!Array.isArray(parsedMovies)) {
+              await commentOnIssue("Movies payload must be a JSON array.");
+              return;
+            }
+
+            const books = parsedBooks
               .map((book) => {
                 const totalPages = Number(book?.totalPages);
                 const currentPagesRaw = Number(book?.currentPages ?? 0);
@@ -79,6 +98,27 @@ jobs:
                   author: book.author,
                   totalPages,
                   currentPages,
+                };
+              })
+              .filter(Boolean);
+
+            const movies = parsedMovies
+              .map((movie) => {
+                if (typeof movie?.title !== "string") {
+                  return null;
+                }
+
+                const normalizedStatus = String(movie?.status ?? "want-to-watch").trim();
+                const status = normalizedStatus === "watched" ? "watched" : "want-to-watch";
+                const yearNumber = movie?.year === null || movie?.year === undefined || movie?.year === ""
+                  ? null
+                  : Number(movie?.year);
+
+                return {
+                  id: String(movie?.id ?? `movie-${Date.now()}`),
+                  title: movie.title,
+                  year: Number.isFinite(yearNumber) ? yearNumber : null,
+                  status,
                 };
               })
               .filter(Boolean);
@@ -124,6 +164,19 @@ jobs:
               "",
             ].join("\n");
 
+            const moviesMarkdown = [
+              "# Movies & Drama Database",
+              "",
+              "This file is the shared Markdown database for movies and dramas used by the site.",
+              "",
+              "Edit the JSON block below to update movie information.",
+              "",
+              "```json",
+              JSON.stringify(movies, null, 2),
+              "```",
+              "",
+            ].join("\n");
+
             const existingFile = await github.rest.repos.getContent({
               owner,
               repo,
@@ -138,6 +191,23 @@ jobs:
               message: `Update books data from website issue #${issue.number}`,
               content: Buffer.from(booksMarkdown).toString("base64"),
               sha: existingFile.data.sha,
+              branch
+            });
+
+            const existingMoviesFile = await github.rest.repos.getContent({
+              owner,
+              repo,
+              path: "data/movies.md",
+              ref: branch
+            });
+
+            await github.rest.repos.createOrUpdateFileContents({
+              owner,
+              repo,
+              path: "data/movies.md",
+              message: `Update movies data from website issue #${issue.number}`,
+              content: Buffer.from(moviesMarkdown).toString("base64"),
+              sha: existingMoviesFile.data.sha,
               branch
             });
 
@@ -159,7 +229,7 @@ jobs:
               const pr = await github.rest.pulls.create({
                 owner,
                 repo,
-                title: `Website books update from issue #${issue.number}`,
+                title: `Website library update from issue #${issue.number}`,
                 body: `Automated update from website issue #${issue.number}.\n\nCloses #${issue.number}`,
                 head: branch,
                 base
