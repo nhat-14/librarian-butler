@@ -1,9 +1,56 @@
 const bookList = document.getElementById("bookList");
+const movieList = document.getElementById("movieList");
 const template = document.getElementById("bookCardTemplate");
+const movieTemplate = document.getElementById("movieCardTemplate");
 const addBookForm = document.getElementById("addBookForm");
+const addMovieForm = document.getElementById("addMovieForm");
 const createPrUpdateButton = document.getElementById("createPrUpdateButton");
+const createMoviePrUpdateButton = document.getElementById("createMoviePrUpdateButton");
+const tabButtons = document.querySelectorAll(".tab-button");
+const tabContents = document.querySelectorAll(".tab-content");
+const filterButtons = document.querySelectorAll(".filter-button");
 
 let books = [];
+let movies = [];
+let currentMovieFilter = "all";
+
+function normalizeMovie(movie) {
+  if (!movie || typeof movie.title !== "string") {
+    return null;
+  }
+
+  return {
+    id: String(movie.id ?? `movie-${crypto.randomUUID()}`),
+    title: String(movie.title),
+    year: movie.year ? Number(movie.year) : null,
+    status: String(movie.status ?? "want-to-watch"),
+  };
+}
+
+async function loadMoviesFromMarkdown() {
+  try {
+    const response = await fetch("./data/movies.md", { cache: "no-store" });
+    if (!response.ok) {
+      return [];
+    }
+
+    const markdown = await response.text();
+    const jsonBlockMatch = markdown.match(/```json\s*([\s\S]*?)```/i);
+    if (!jsonBlockMatch) {
+      return [];
+    }
+
+    const parsedMovies = JSON.parse(jsonBlockMatch[1]);
+    if (!Array.isArray(parsedMovies)) {
+      return [];
+    }
+
+    return parsedMovies.map(normalizeMovie).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
 
 function normalizeBook(book) {
   if (
@@ -52,12 +99,19 @@ async function loadBooksFromMarkdown() {
 
 async function initializeLibrary() {
   const markdownBooks = await loadBooksFromMarkdown();
+  const markdownMovies = await loadMoviesFromMarkdown();
   books = markdownBooks;
+  movies = markdownMovies;
   renderLibrary();
+  renderMovies();
 }
 
 function saveBooks(nextBooks) {
   books = nextBooks;
+}
+
+function saveMovies(nextMovies) {
+  movies = nextMovies;
 }
 
 function inferRepositoryFromLocation() {
@@ -112,6 +166,41 @@ function createWebsiteUpdateIssue() {
   window.open(issueUrl.toString(), "_blank", "noopener");
 }
 
+function createMovieWebsiteUpdateIssue() {
+  const { owner, repo } = inferRepositoryFromLocation();
+  if (!owner || !repo) {
+    window.alert("Could not determine repository path.");
+    return;
+  }
+
+  const compactMovies = movies.map((movie) => ({
+    id: String(movie.id),
+    title: String(movie.title),
+    year: movie.year ? Number(movie.year) : null,
+    status: String(movie.status),
+  }));
+
+  const issueTitle = `[website-update] Movies data update (${new Date().toISOString().slice(0, 10)})`;
+  const issueBody = [
+    "This issue was generated from the website UI.",
+    "",
+    "Please keep the markers unchanged.",
+    "",
+    "<!-- MOVIES_JSON_START -->",
+    "```json",
+    JSON.stringify(compactMovies, null, 2),
+    "```",
+    "<!-- MOVIES_JSON_END -->",
+  ].join("\n");
+
+  const issueUrl = new URL(`https://github.com/${owner}/${repo}/issues/new`);
+  issueUrl.searchParams.set("title", issueTitle);
+  issueUrl.searchParams.set("body", issueBody);
+
+  window.open(issueUrl.toString(), "_blank", "noopener");
+}
+
+
 function renderBook(book) {
   const fragment = template.content.cloneNode(true);
   const row = fragment.querySelector(".book-row");
@@ -148,10 +237,52 @@ function renderLibrary() {
   bookList.appendChild(fragment);
 }
 
+function renderMovie(movie) {
+  const fragment = movieTemplate.content.cloneNode(true);
+  const row = fragment.querySelector(".movie-row");
+  const title = fragment.querySelector(".title");
+  const year = fragment.querySelector(".year");
+  const status = fragment.querySelector(".status");
+  const removeButton = fragment.querySelector(".remove-movie");
+
+  const statusLabel = movie.status === "watched" ? "✓ Watched" : "⏱ Want to Watch";
+
+  row.dataset.movieId = movie.id;
+  row.dataset.status = movie.status;
+  title.textContent = movie.title;
+  year.textContent = movie.year ? `${movie.year}` : "No year";
+  status.textContent = statusLabel;
+  
+  removeButton.addEventListener("click", () => removeMovie(movie.id));
+
+  return fragment;
+}
+
+function renderMovies() {
+  movieList.replaceChildren();
+  const fragment = document.createDocumentFragment();
+
+  const filtered = currentMovieFilter === "all" 
+    ? movies 
+    : movies.filter((m) => m.status === currentMovieFilter);
+
+  filtered.forEach((movie) => {
+    fragment.appendChild(renderMovie(movie));
+  });
+
+  movieList.appendChild(fragment);
+}
+
 function removeBook(bookId) {
   books = books.filter((book) => book.id !== bookId);
   saveBooks(books);
   renderLibrary();
+}
+
+function removeMovie(movieId) {
+  movies = movies.filter((movie) => movie.id !== movieId);
+  saveMovies(movies);
+  renderMovies();
 }
 
 function updateCurrentPages(bookId, nextCurrentPagesValue) {
@@ -202,6 +333,62 @@ addBookForm.addEventListener("submit", (event) => {
   addBookForm.reset();
 });
 
+addMovieForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const formData = new FormData(addMovieForm);
+  const title = String(formData.get("title") ?? "").trim();
+  const year = formData.get("year") ? Number(formData.get("year")) : null;
+  const status = String(formData.get("status") ?? "want-to-watch");
+
+  if (!title) {
+    return;
+  }
+
+  movies = [
+    {
+      id: `movie-${crypto.randomUUID()}`,
+      title,
+      year,
+      status,
+    },
+    ...movies,
+  ];
+
+  saveMovies(movies);
+  renderMovies();
+  addMovieForm.reset();
+});
+
+// Tab switching
+tabButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const tab = button.getAttribute("data-tab");
+    
+    // Update active button
+    tabButtons.forEach((b) => b.classList.remove("active"));
+    button.classList.add("active");
+    
+    // Update active content
+    tabContents.forEach((content) => content.classList.remove("active"));
+    document.getElementById(`${tab}Tab`).classList.add("active");
+  });
+});
+
+// Movie filter buttons
+filterButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    currentMovieFilter = button.getAttribute("data-filter");
+    
+    // Update active button
+    filterButtons.forEach((b) => b.classList.remove("active"));
+    button.classList.add("active");
+    
+    renderMovies();
+  });
+});
+
 createPrUpdateButton.addEventListener("click", createWebsiteUpdateIssue);
+createMoviePrUpdateButton.addEventListener("click", createMovieWebsiteUpdateIssue);
 
 initializeLibrary();

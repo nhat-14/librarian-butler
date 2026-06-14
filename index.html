@@ -10,36 +10,78 @@
   <body>
     <main class="shell">
       <header class="hero">
-        <h1>Books</h1>
+        <div class="tabs">
+          <button class="tab-button active" data-tab="books">📚 Books</button>
+          <button class="tab-button" data-tab="movies">🎬 Movies & Drama</button>
+        </div>
       </header>
 
-      <section class="composer" aria-label="Add a book">
-        <form id="addBookForm" class="add-book-form">
-          <label>
-            <span>Book title</span>
-            <input name="title" type="text" placeholder="The Hobbit" required />
-          </label>
-          <label>
-            <span>Author</span>
-            <input name="author" type="text" placeholder="J. R. R. Tolkien" required />
-          </label>
-          <label>
-            <span>Total pages</span>
-            <input name="totalPages" type="number" min="1" step="1" placeholder="310" required />
-          </label>
-          <label>
-            <span>Current pages</span>
-            <input name="currentPages" type="number" min="0" step="1" placeholder="120" />
-          </label>
-          <button type="submit">Add book</button>
-        </form>
-        <div class="data-actions">
-          <button id="createPrUpdateButton" type="button">Create PR update</button>
-        </div>
+      <!-- BOOKS TAB -->
+      <section id="booksTab" class="tab-content active">
+        <section class="composer" aria-label="Add a book">
+          <form id="addBookForm" class="add-book-form">
+            <label>
+              <span>Book title</span>
+              <input name="title" type="text" placeholder="The Hobbit" required />
+            </label>
+            <label>
+              <span>Author</span>
+              <input name="author" type="text" placeholder="J. R. R. Tolkien" required />
+            </label>
+            <label>
+              <span>Total pages</span>
+              <input name="totalPages" type="number" min="1" step="1" placeholder="310" required />
+            </label>
+            <label>
+              <span>Current pages</span>
+              <input name="currentPages" type="number" min="0" step="1" placeholder="120" />
+            </label>
+            <button type="submit">Add book</button>
+          </form>
+          <div class="data-actions">
+            <button id="createPrUpdateButton" type="button">Create PR update</button>
+          </div>
+        </section>
+
+        <section class="library" aria-label="Book list">
+          <div id="bookList" class="book-list"></div>
+        </section>
       </section>
 
-      <section class="library" aria-label="Book list">
-        <div id="bookList" class="book-list"></div>
+      <!-- MOVIES TAB -->
+      <section id="moviesTab" class="tab-content">
+        <section class="composer" aria-label="Add a movie">
+          <form id="addMovieForm" class="add-movie-form">
+            <label>
+              <span>Movie/Drama title</span>
+              <input name="title" type="text" placeholder="Movie name" required />
+            </label>
+            <label>
+              <span>Year</span>
+              <input name="year" type="number" min="1900" max="2099" placeholder="2024" />
+            </label>
+            <label>
+              <span>Status</span>
+              <select name="status" required>
+                <option value="want-to-watch">Want to Watch</option>
+                <option value="watched">Watched</option>
+              </select>
+            </label>
+            <button type="submit">Add movie</button>
+          </form>
+          <div class="data-actions">
+            <button id="createMoviePrUpdateButton" type="button">Create PR update</button>
+          </div>
+        </section>
+
+        <section class="library" aria-label="Movie list">
+          <div class="movie-filters">
+            <button class="filter-button active" data-filter="all">All</button>
+            <button class="filter-button" data-filter="want-to-watch">Want to Watch</button>
+            <button class="filter-button" data-filter="watched">Watched</button>
+          </div>
+          <div id="movieList" class="movie-list"></div>
+        </section>
       </section>
     </main>
 
@@ -59,6 +101,19 @@
           </div>
           <span class="percent"></span>
           <button class="remove-book" type="button" aria-label="Remove book">Remove</button>
+        </div>
+      </article>
+    </template>
+
+    <template id="movieCardTemplate">
+      <article class="movie-row">
+        <div class="movie-text">
+          <h2 class="title"></h2>
+          <p class="year"></p>
+          <p class="status"></p>
+        </div>
+        <div class="movie-actions">
+          <button class="remove-movie" type="button" aria-label="Remove movie">Remove</button>
         </div>
       </article>
     </template>
