@@ -7,6 +7,20 @@ Edit the JSON block below to update book information.
 ```json
 [
   {
+    "id": "book-dd996aa3-56ec-4f1c-bf58-083533069b9d",
+    "title": "Learn OpenShift",
+    "author": "Aleksey Usov, Aleksandr Varlamov, Denis Zuev",
+    "totalPages": 708,
+    "currentPages": 5
+  },
+  {
+    "id": "book-ed0c518e-9947-4fd7-8ce2-c931579b9e12",
+    "title": "An Illustrated Guide to AI Agents",
+    "author": "Maarten Grootendorst, Jay Alammar",
+    "totalPages": 450,
+    "currentPages": 1
+  },
+  {
     "id": "book-9da789f7-85dc-4d74-ac0a-a32d3b6db2d1",
     "title": "Computer Networking",
     "author": "James F. Kurose and Keith W. Ross",
