@@ -11,7 +11,7 @@ Edit the JSON block below to update book information.
     "title": "Learn OpenShift",
     "author": "Aleksey Usov, Aleksandr Varlamov, Denis Zuev",
     "totalPages": 708,
-    "currentPages": 5
+    "currentPages": 34
   },
   {
     "id": "book-ed0c518e-9947-4fd7-8ce2-c931579b9e12",
