@@ -7,6 +7,20 @@ Edit the JSON block below to update book information.
 ```json
 [
   {
+    "id": "book-f61bde30-9a38-4226-84d6-b0066374dc25",
+    "title": "The Kubernetes Book",
+    "author": "Nigel Poulton",
+    "totalPages": 341,
+    "currentPages": 60
+  },
+  {
+    "id": "book-d80c401b-a16f-4556-b05a-cd7b6d5f814e",
+    "title": "Kubernetes in Action",
+    "author": "Kevin Conner, Marko Luksa",
+    "totalPages": 688,
+    "currentPages": 1
+  },
+  {
     "id": "book-dd996aa3-56ec-4f1c-bf58-083533069b9d",
     "title": "Learn OpenShift",
     "author": "Aleksey Usov, Aleksandr Varlamov, Denis Zuev",
