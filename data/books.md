@@ -7,6 +7,13 @@ Edit the JSON block below to update book information.
 ```json
 [
   {
+    "id": "book-d8e144df-90ab-44cf-8f58-180f4604b716",
+    "title": "Working in Public: The Making and Maintenance of Open Source Software",
+    "author": "Nadia Asparouhova",
+    "totalPages": 256,
+    "currentPages": 0
+  },
+  {
     "id": "book-f61bde30-9a38-4226-84d6-b0066374dc25",
     "title": "The Kubernetes Book",
     "author": "Nigel Poulton",
