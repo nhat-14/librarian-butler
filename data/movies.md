@@ -7,6 +7,12 @@ Edit the JSON block below to update movie information.
 ```json
 [
   {
+    "id": "movie-b803ffce-181c-41fc-a7a2-0e27f5218f64",
+    "title": "The Art of Sarah",
+    "year": 2026,
+    "status": "watched"
+  },
+  {
     "id": "movie-86261cff-ea30-4b2d-87f4-f5bf587ad2dd",
     "title": "Superbad",
     "year": 2007,
