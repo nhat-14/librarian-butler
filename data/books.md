@@ -53,7 +53,7 @@ Edit the JSON block below to update book information.
     "title": "日本語基本文法辞典",
     "author": "Seiichi Makino and Michio Tsusui",
     "totalPages": 644,
-    "currentPages": 55
+    "currentPages": 67
   },
   {
     "id": "book-89dd9929-2542-4147-b6a5-2c25a5a854d8",
