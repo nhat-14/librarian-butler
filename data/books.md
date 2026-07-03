@@ -7,6 +7,13 @@ Edit the JSON block below to update book information.
 ```json
 [
   {
+    "id": "book-73a1415f-8ee3-4e96-bc15-95c59637e084",
+    "title": "初めてのGraphQL ―Webサービスを作って学ぶ新世代API",
+    "author": "Eve Porcello, Alex Banks, 尾崎 沙耶, あんどうやすし",
+    "totalPages": 256,
+    "currentPages": 0
+  },
+  {
     "id": "book-d8e144df-90ab-44cf-8f58-180f4604b716",
     "title": "Working in Public: The Making and Maintenance of Open Source Software",
     "author": "Nadia Asparouhova",
