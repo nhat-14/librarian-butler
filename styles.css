@@ -32,9 +32,31 @@ body {
 }
 
 .hero {
-  display: grid;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 6px;
   margin-bottom: 14px;
+}
+
+.github-link {
+  display: flex;
+  align-items: center;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 6px;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.github-link:hover {
+  color: var(--text);
+  background: var(--bg-alt);
+}
+
+.github-icon {
+  width: 24px;
+  height: 24px;
 }
 
 h1 {
