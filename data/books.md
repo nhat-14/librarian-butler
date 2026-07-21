@@ -25,7 +25,7 @@ Edit the JSON block below to update book information.
     "title": "The Kubernetes Book",
     "author": "Nigel Poulton",
     "totalPages": 341,
-    "currentPages": 116
+    "currentPages": 120
   },
   {
     "id": "book-d80c401b-a16f-4556-b05a-cd7b6d5f814e",
