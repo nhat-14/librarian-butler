@@ -7,6 +7,13 @@ Edit the JSON block below to update book information.
 ```json
 [
   {
+    "id": "book-b31288a7-8b6f-4d12-b11c-3ec21e5a1452",
+    "title": "Cloud Native Edge Essentials",
+    "author": "SUSE",
+    "totalPages": 288,
+    "currentPages": 1
+  },
+  {
     "id": "book-73a1415f-8ee3-4e96-bc15-95c59637e084",
     "title": "初めてのGraphQL ―Webサービスを作って学ぶ新世代API",
     "author": "Eve Porcello, Alex Banks, 尾崎 沙耶, あんどうやすし",
