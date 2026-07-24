@@ -7,6 +7,13 @@ Edit the JSON block below to update book information.
 ```json
 [
   {
+    "id": "book-72b1a9f4-d168-47f1-9046-4bb5077170bf",
+    "title": "ＯＳＳビジネス活用の教科書",
+    "author": "中村雄一、桑田昌行、渡邊歩、福安徳晃",
+    "totalPages": 299,
+    "currentPages": 13
+  },
+  {
     "id": "book-b31288a7-8b6f-4d12-b11c-3ec21e5a1452",
     "title": "Cloud Native Edge Essentials",
     "author": "SUSE",
