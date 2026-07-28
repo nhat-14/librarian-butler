@@ -18,7 +18,7 @@ Edit the JSON block below to update book information.
     "title": "Cloud Native Edge Essentials",
     "author": "SUSE",
     "totalPages": 288,
-    "currentPages": 1
+    "currentPages": 17
   },
   {
     "id": "book-73a1415f-8ee3-4e96-bc15-95c59637e084",
