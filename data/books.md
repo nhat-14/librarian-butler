@@ -7,6 +7,13 @@ Edit the JSON block below to update book information.
 ```json
 [
   {
+    "id": "book-be8f52f4-7930-4407-9725-e905b6144aed",
+    "title": "HTTP: The Definitive Guide",
+    "author": "David Gourley, Brian Totty, Marjorie Sayer, Anshu Aggarwal, Sailu Reddy",
+    "totalPages": 656,
+    "currentPages": 10
+  },
+  {
     "id": "book-72b1a9f4-d168-47f1-9046-4bb5077170bf",
     "title": "ＯＳＳビジネス活用の教科書",
     "author": "中村雄一、桑田昌行、渡邊歩、福安徳晃",
@@ -54,13 +61,6 @@ Edit the JSON block below to update book information.
     "author": "Aleksey Usov, Aleksandr Varlamov, Denis Zuev",
     "totalPages": 708,
     "currentPages": 34
-  },
-  {
-    "id": "book-ed0c518e-9947-4fd7-8ce2-c931579b9e12",
-    "title": "An Illustrated Guide to AI Agents",
-    "author": "Maarten Grootendorst, Jay Alammar",
-    "totalPages": 450,
-    "currentPages": 1
   },
   {
     "id": "book-9da789f7-85dc-4d74-ac0a-a32d3b6db2d1",
