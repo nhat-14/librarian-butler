@@ -11,7 +11,7 @@ Edit the JSON block below to update book information.
     "title": "HTTP: The Definitive Guide",
     "author": "David Gourley, Brian Totty, Marjorie Sayer, Anshu Aggarwal, Sailu Reddy",
     "totalPages": 656,
-    "currentPages": 23
+    "currentPages": 43
   },
   {
     "id": "book-72b1a9f4-d168-47f1-9046-4bb5077170bf",
