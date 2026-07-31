@@ -67,7 +67,7 @@ Edit the JSON block below to update book information.
     "title": "Computer Networking",
     "author": "James F. Kurose and Keith W. Ross",
     "totalPages": 797,
-    "currentPages": 75
+    "currentPages": 86
   },
   {
     "id": "book-ad951963-6d3f-44ed-b1c3-fe68f0b20293",
