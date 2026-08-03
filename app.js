@@ -52,6 +52,27 @@ async function loadMoviesFromMarkdown() {
 }
 
 
+// Parses "1-50, 200-250" into a count of unique page numbers within [1, totalPages]
+function parsePageRanges(str, totalPages) {
+  if (!str || !str.trim()) return 0;
+  const pages = new Set();
+  for (const part of str.split(",")) {
+    const range = part.trim();
+    const dashIdx = range.indexOf("-", 1);
+    if (dashIdx !== -1) {
+      const from = parseInt(range.slice(0, dashIdx), 10);
+      const to = parseInt(range.slice(dashIdx + 1), 10);
+      if (Number.isFinite(from) && Number.isFinite(to)) {
+        for (let p = Math.max(1, from); p <= Math.min(to, totalPages); p++) pages.add(p);
+      }
+    } else {
+      const p = parseInt(range, 10);
+      if (Number.isFinite(p) && p >= 1 && p <= totalPages) pages.add(p);
+    }
+  }
+  return pages.size;
+}
+
 function normalizeBook(book) {
   if (
     !book ||
@@ -64,12 +85,18 @@ function normalizeBook(book) {
 
   const totalPages = Number(book.totalPages);
 
+  // Backward compat: convert old currentPages number to a range string
+  let pagesRead = book.pagesRead ?? null;
+  if (pagesRead === null && Number.isFinite(Number(book.currentPages)) && Number(book.currentPages) > 0) {
+    pagesRead = `1-${Math.min(Number(book.currentPages), totalPages)}`;
+  }
+
   return {
     id: String(book.id ?? `book-${crypto.randomUUID()}`),
     title: String(book.title),
     author: String(book.author),
     totalPages,
-    currentPages: Math.min(Math.max(Number(book.currentPages ?? 0), 0), totalPages),
+    pagesRead: String(pagesRead ?? ""),
   };
 }
 
@@ -143,7 +170,7 @@ function createWebsiteUpdateIssue() {
     title: String(book.title),
     author: String(book.author),
     totalPages: Number(book.totalPages),
-    currentPages: Number(book.currentPages),
+    pagesRead: String(book.pagesRead ?? ""),
   }));
 
   const compactMovies = movies.map((movie) => ({
@@ -190,14 +217,14 @@ function renderBook(book) {
   const progressBar = fragment.querySelector(".progress-bar");
   const removeButton = fragment.querySelector(".remove-book");
 
-  const progress = book.totalPages === 0 ? 0 : Math.round((book.currentPages / book.totalPages) * 100);
+  const uniquePages = parsePageRanges(book.pagesRead, book.totalPages);
+  const progress = book.totalPages === 0 ? 0 : Math.round((uniquePages / book.totalPages) * 100);
 
   row.dataset.bookId = book.id;
   title.textContent = book.title;
   author.textContent = book.author;
-  currentPagesInput.value = String(book.currentPages);
-  currentPagesInput.max = String(book.totalPages);
-  currentPagesInput.addEventListener("change", () => updateCurrentPages(book.id, currentPagesInput.value));
+  currentPagesInput.value = book.pagesRead;
+  currentPagesInput.addEventListener("change", () => updatePagesRead(book.id, currentPagesInput.value));
   percent.textContent = `${progress}%`;
   progressBar.style.width = `${progress}%`;
   removeButton.addEventListener("click", () => removeBook(book.id));
@@ -264,19 +291,13 @@ function removeMovie(movieId) {
   renderMovies();
 }
 
-function updateCurrentPages(bookId, nextCurrentPagesValue) {
+function updatePagesRead(bookId, value) {
   const book = books.find((entry) => entry.id === bookId);
   if (!book) {
     return;
   }
 
-  const nextCurrentPages = Number(nextCurrentPagesValue);
-  if (!Number.isFinite(nextCurrentPages) || nextCurrentPages < 0) {
-    renderLibrary();
-    return;
-  }
-
-  book.currentPages = Math.min(Math.max(nextCurrentPages, 0), book.totalPages);
+  book.pagesRead = String(value ?? "").trim();
   saveBooks(books);
   renderLibrary();
 }
@@ -288,13 +309,11 @@ addBookForm.addEventListener("submit", (event) => {
   const title = String(formData.get("title") ?? "").trim();
   const author = String(formData.get("author") ?? "").trim();
   const totalPages = Number(formData.get("totalPages") ?? 0);
-  const currentPages = Number(formData.get("currentPages") ?? 0);
+  const pagesRead = String(formData.get("pagesRead") ?? "").trim();
 
-  if (!title || !author || !Number.isFinite(totalPages) || totalPages < 1 || !Number.isFinite(currentPages)) {
+  if (!title || !author || !Number.isFinite(totalPages) || totalPages < 1) {
     return;
   }
-
-  const safeCurrentPages = Math.min(Math.max(currentPages, 0), totalPages);
 
   books = [
     {
@@ -302,7 +321,7 @@ addBookForm.addEventListener("submit", (event) => {
       title,
       author,
       totalPages,
-      currentPages: safeCurrentPages,
+      pagesRead,
     },
     ...books,
   ];
