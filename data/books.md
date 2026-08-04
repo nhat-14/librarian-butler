@@ -7,6 +7,13 @@ Edit the JSON block below to update book information.
 ```json
 [
   {
+    "id": "book-70dc10a1-ab38-4931-a80d-cb085a135c22",
+    "title": "GitHub Actions in Action",
+    "author": "Marcel de Vries, Rob Bos, Michael Kaufmann",
+    "totalPages": 256,
+    "pagesRead": "1-25"
+  },
+  {
     "id": "book-be8f52f4-7930-4407-9725-e905b6144aed",
     "title": "HTTP: The Definitive Guide",
     "author": "David Gourley, Brian Totty, Marjorie Sayer, Anshu Aggarwal, Sailu Reddy",
