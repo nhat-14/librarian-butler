@@ -78,7 +78,6 @@ jobs:
             const books = parsedBooks
               .map((book) => {
                 const totalPages = Number(book?.totalPages);
-                const currentPagesRaw = Number(book?.currentPages ?? 0);
                 if (
                   typeof book?.title !== "string" ||
                   typeof book?.author !== "string" ||
@@ -88,16 +87,23 @@ jobs:
                   return null;
                 }
 
-                const currentPages = Number.isFinite(currentPagesRaw)
-                  ? Math.min(Math.max(currentPagesRaw, 0), totalPages)
-                  : 0;
+                let pagesRead = String(book?.pagesRead ?? "").trim();
+
+                // Backward compatibility for older payloads that still send currentPages.
+                if (!pagesRead) {
+                  const currentPagesRaw = Number(book?.currentPages ?? 0);
+                  if (Number.isFinite(currentPagesRaw) && currentPagesRaw > 0) {
+                    const clampedPages = Math.min(Math.max(currentPagesRaw, 0), totalPages);
+                    pagesRead = `1-${clampedPages}`;
+                  }
+                }
 
                 return {
                   id: String(book?.id ?? `book-${Date.now()}`),
                   title: book.title,
                   author: book.author,
                   totalPages,
-                  currentPages,
+                  pagesRead,
                 };
               })
               .filter(Boolean);
