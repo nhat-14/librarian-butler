@@ -7,6 +7,24 @@ Edit the JSON block below to update movie information.
 ```json
 [
   {
+    "id": "movie-924c16e3-8333-4e4b-a9ed-1e88235c0933",
+    "title": "Attack on Titan",
+    "year": 2013,
+    "status": "watched"
+  },
+  {
+    "id": "movie-3f368da8-6d52-4d34-b9e4-e625597688b0",
+    "title": "The Odyssey",
+    "year": 2026,
+    "status": "watched"
+  },
+  {
+    "id": "movie-ff3128cb-98ae-4353-8594-514727a43fa3",
+    "title": "Project Hail Mary",
+    "year": 2026,
+    "status": "watched"
+  },
+  {
     "id": "movie-b803ffce-181c-41fc-a7a2-0e27f5218f64",
     "title": "The Art of Sarah",
     "year": 2026,
