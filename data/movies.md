@@ -7,6 +7,18 @@ Edit the JSON block below to update movie information.
 ```json
 [
   {
+    "id": "movie-e11501a4-75f4-42ae-b84a-c385ea4b15f2",
+    "title": "The Price of Confession",
+    "year": 2025,
+    "status": "watched"
+  },
+  {
+    "id": "movie-cf3bba02-6685-4c27-819d-4278f8751baf",
+    "title": "The Golden Spoon",
+    "year": 2022,
+    "status": "watched"
+  },
+  {
     "id": "movie-924c16e3-8333-4e4b-a9ed-1e88235c0933",
     "title": "Attack on Titan",
     "year": 2013,
