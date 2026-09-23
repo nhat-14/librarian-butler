@@ -7,6 +7,13 @@ Edit the JSON block below to update book information.
 ```json
 [
   {
+    "id": "book-fbe61c01-2620-4915-8236-4c22a649e449",
+    "title": "つくって、壊して、直して学ぶ Kubernetes入門",
+    "author": "高橋 あおい",
+    "totalPages": 368,
+    "pagesRead": "10"
+  },
+  {
     "id": "book-70dc10a1-ab38-4931-a80d-cb085a135c22",
     "title": "GitHub Actions in Action",
     "author": "Marcel de Vries, Rob Bos, Michael Kaufmann",
