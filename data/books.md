@@ -18,7 +18,7 @@ Edit the JSON block below to update book information.
     "title": "GitHub Actions in Action",
     "author": "Marcel de Vries, Rob Bos, Michael Kaufmann",
     "totalPages": 256,
-    "pagesRead": "1-25"
+    "pagesRead": "1-49"
   },
   {
     "id": "book-be8f52f4-7930-4407-9725-e905b6144aed",
