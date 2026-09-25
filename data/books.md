@@ -11,7 +11,7 @@ Edit the JSON block below to update book information.
     "title": "つくって、壊して、直して学ぶ Kubernetes入門",
     "author": "高橋 あおい",
     "totalPages": 368,
-    "pagesRead": "1-91"
+    "pagesRead": "1-117"
   },
   {
     "id": "book-70dc10a1-ab38-4931-a80d-cb085a135c22",
