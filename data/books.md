@@ -95,7 +95,7 @@ Edit the JSON block below to update book information.
     "title": "Essential Scrum",
     "author": "KENNETH S. RUBIN",
     "totalPages": 498,
-    "pagesRead": "1-63"
+    "pagesRead": "1-74"
   }
 ]
 ```
