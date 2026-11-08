@@ -7,6 +7,12 @@ Edit the JSON block below to update movie information.
 ```json
 [
   {
+    "id": "movie-7dc42bd5-9f24-4de2-ac2b-c1571e8f7898",
+    "title": "Notes from the Last Row",
+    "year": 2026,
+    "status": "watched"
+  },
+  {
     "id": "movie-e11501a4-75f4-42ae-b84a-c385ea4b15f2",
     "title": "The Price of Confession",
     "year": 2025,
