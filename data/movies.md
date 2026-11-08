@@ -7,6 +7,12 @@ Edit the JSON block below to update movie information.
 ```json
 [
   {
+    "id": "movie-7dc42bd5-9f24-4de2-ac2b-c1571e8f7898",
+    "title": "Notes from the Last Row",
+    "year": 2026,
+    "status": "watched"
+  },
+  {
     "id": "movie-bbd5179d-278d-49ff-8c29-d2aee3c89da8",
     "title": "The Husband",
     "year": 2026,
