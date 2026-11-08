@@ -13,6 +13,12 @@ Edit the JSON block below to update movie information.
     "status": "watched"
   },
   {
+    "id": "movie-bbd5179d-278d-49ff-8c29-d2aee3c89da8",
+    "title": "The Husband",
+    "year": 2026,
+    "status": "watched"
+  },
+  {
     "id": "movie-e11501a4-75f4-42ae-b84a-c385ea4b15f2",
     "title": "The Price of Confession",
     "year": 2025,
